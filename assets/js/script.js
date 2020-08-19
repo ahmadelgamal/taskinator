@@ -30,6 +30,8 @@ var completeEditTask = function (taskName, taskType, taskId) {
     }
   }
 
+  saveTasks();
+
   // alert("Task Updated!");
 };
 
@@ -97,6 +99,8 @@ var createTaskEl = function (taskDataObj) {
   taskDataObj.id = taskIdCounter;
 
   tasks.push(taskDataObj);
+
+  saveTasks();
 
   var taskActionsEl = createTaskActions(taskIdCounter);
   listItemEl.appendChild(taskActionsEl);
@@ -193,10 +197,13 @@ var deleteTask = function (taskId) {
       updatedTaskArr.push(tasks[i]);
     }
   }
-
+  
+  saveTasks();
+  
   // reassign tasks array to be the same as updatedTaskArr
   tasks = updatedTaskArr;
 };
+
 
 // This is used for event bubbling/event delegation for edit and delete buttons on the entire `<main>` element
 var taskButtonHandler = function (event) {
@@ -243,6 +250,9 @@ var taskStatusChangeHandler = function (event) {
 
     console.log(tasks);
   }
+
+  saveTasks();
+
 };
 
 var dragTaskHandler = function (event) {
@@ -290,6 +300,8 @@ var dropTaskHandler = function (event) {
 
   // This assigns the task to the proper task list when being dropped
   dropZoneEl.appendChild(draggableElement);
+
+  saveTasks();
 };
 
 var dragLeaveHandler = function (event) {
@@ -298,6 +310,10 @@ var dragLeaveHandler = function (event) {
     taskListEl.removeAttribute("style");
   }
 };
+
+var saveTasks = function() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 
 pageContentEl.addEventListener("click", taskButtonHandler);
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
