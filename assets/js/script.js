@@ -150,12 +150,12 @@ var editTask = function (taskId) {
 
   // get content from task name and type
   var taskName = taskSelected.querySelector("h3.task-name").textContent;
-
   var taskType = taskSelected.querySelector("span.task-type").textContent;
 
   document.querySelector("input[name='task-name']").value = taskName;
   document.querySelector("select[name='task-type']").value = taskType;
   document.querySelector("#save-task").textContent = "Save Task";
+
   formEl.setAttribute("data-task-id", taskId);
 };
 
@@ -209,13 +209,19 @@ var dragTaskHandler = function (event) {
   event.dataTransfer.setData("text/plain", taskId);
 
   var getId = event.dataTransfer.getData("text/plain");
-  // console.log("getId:", getId, typeof getId);
 };
 
 var dropZoneDragHandler = function (event) {
   var taskListEl = event.target.closest(".task-list");
+
   if (taskListEl) {
     event.preventDefault();
+
+    // This adds extra styling to highlight the dropzone while the task is being dragged
+    taskListEl.setAttribute(
+      "style",
+      "background: rgba(68, 233, 255, 0.7); border-style: dashed;"
+    );
   }
 };
 
@@ -238,7 +244,18 @@ var dropTaskHandler = function (event) {
     statusSelectEl.selectedIndex = 2;
   }
 
+  // This removes the extra styling that indicates the drop zone once the task is dropped
+  dropZoneEl.removeAttribute("style");
+
+  // This assigns the task to the proper task list when being dropped
   dropZoneEl.appendChild(draggableElement);
+};
+
+var dragLeaveHandler = function (event) {
+  var taskListEl = event.target.closest(".task-list");
+  if (taskListEl) {
+    taskListEl.removeAttribute("style");
+  }
 };
 
 pageContentEl.addEventListener("click", taskButtonHandler);
@@ -246,3 +263,4 @@ pageContentEl.addEventListener("change", taskStatusChangeHandler);
 pageContentEl.addEventListener("dragstart", dragTaskHandler);
 pageContentEl.addEventListener("dragover", dropZoneDragHandler);
 pageContentEl.addEventListener("drop", dropTaskHandler);
+pageContentEl.addEventListener("dragleave", dragLeaveHandler);
